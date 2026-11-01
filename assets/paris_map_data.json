@@ -1,0 +1,103 @@
+{
+  "project": "Google Maps - Go like you live here.",
+  "location": "Paris, France",
+  "attribution": "Map data © OpenStreetMap contributors (ODbL) | Spec ad by LEOREAL.AI",
+  "timeline_duration": 22.0,
+  "waypoints": [
+    {
+      "time": 0.0,
+      "name": "Start / Overhead View",
+      "street": "Rue de Rivoli",
+      "position": [0, 4, 0],
+      "heading": 0
+    },
+    {
+      "time": 2.0,
+      "name": "Rue de Rivoli Tracking",
+      "street": "Rue de Rivoli",
+      "position": [0, 1.2, 40],
+      "heading": 0
+    },
+    {
+      "time": 4.0,
+      "name": "Vélib' - Palais-Royal",
+      "street": "Place Colette",
+      "poi": {
+        "title": "Vélib' - Palais-Royal",
+        "category": "Bike sharing station",
+        "rating": 4.8,
+        "reviews": 342,
+        "bikes_available": 14,
+        "ebikes_available": 6,
+        "busy_status": "Usually not busy now"
+      },
+      "position": [15, 1.2, 85],
+      "heading": 25
+    },
+    {
+      "time": 7.0,
+      "name": "Rain Ahead / Rue Vivienne",
+      "street": "Rue Vivienne",
+      "weather": "Rain in 10 min",
+      "position": [25, 2.5, 140],
+      "heading": 15
+    },
+    {
+      "time": 9.5,
+      "name": "Galerie Vivienne (Hero Passage)",
+      "street": "Galerie Vivienne",
+      "poi": {
+        "title": "Galerie Vivienne",
+        "subtitle": "Historic covered passage · 1823",
+        "feature": "Glass canopy & mosaic floor"
+      },
+      "position": [30, 1.4, 200],
+      "heading": 0
+    },
+    {
+      "time": 12.0,
+      "name": "Rue de Beaujolais - Meet Friends",
+      "street": "Rue de Beaujolais",
+      "poi": {
+        "title": "Le Jardin Café",
+        "friends": ["Sophie", "Marc", "Camille"],
+        "badge": "3 friends already there"
+      },
+      "position": [10, 1.2, 260],
+      "heading": -40
+    },
+    {
+      "time": 15.0,
+      "name": "Golden Hour / Tuileries Skyline",
+      "street": "Rue de Rivoli Skyline",
+      "poi": {
+        "title": "Rooftop Rivoli",
+        "subtitle": "Panoramic sunset terrace",
+        "view": "Eiffel Tower silhouette"
+      },
+      "position": [-20, 6.0, 320],
+      "heading": -20
+    },
+    {
+      "time": 17.5,
+      "name": "Destination Arrival",
+      "street": "Rooftop Rivoli",
+      "status": "You have arrived",
+      "position": [-30, 8.5, 360],
+      "heading": 45
+    },
+    {
+      "time": 19.5,
+      "name": "Brand Lock-Up",
+      "tagline": "Go like you live here.",
+      "stage": "deep_navy"
+    },
+    {
+      "time": 21.0,
+      "name": "End Card",
+      "creator": "@leoreal.ai",
+      "disclaimer": "Spec ad. Not affiliated with, sponsored or endorsed by Google."
+    }
+  ]
+}
+
