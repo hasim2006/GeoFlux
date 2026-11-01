@@ -3,8 +3,9 @@ node_modules/
 dist/
 .vite/
 
-# Large Media & Binaries (Exported master files)
+# Large Media & Binaries
 *.mp4
+!assets/geoflux_demo.mp4
 *.webm
 *.wav
 *.pdf
