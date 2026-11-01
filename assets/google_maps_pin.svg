@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 156" width="100%" height="100%">
+  <defs>
+    <filter id="pin-shadow" x="-30%" y="-20%" width="160%" height="160%">
+      <feDropShadow dx="0" dy="8" stdDeviation="6" flood-color="#000000" flood-opacity="0.25"/>
+    </filter>
+  </defs>
+  <g filter="url(#pin-shadow)">
+    <!-- Top-left Red Arch -->
+    <path d="M 50 0 C 22.386 0 0 22.386 0 50 C 0 63.807 5.597 76.307 14.645 85.355 L 50 120.71 L 50 50 Z" fill="#EA4335"/>
+    <!-- Top-right Yellow Arch -->
+    <path d="M 50 0 C 77.614 0 100 22.386 100 50 C 100 63.807 94.403 76.307 85.355 85.355 L 50 50 Z" fill="#FBBC04"/>
+    <!-- Bottom-right Green Arch -->
+    <path d="M 50 50 L 85.355 85.355 L 50 120.71 L 50 156 L 85.355 120.71 C 94.403 111.663 100 99.163 100 85.355 Z" fill="#34A853"/>
+    <!-- Bottom-left Blue Tail / Base -->
+    <path d="M 50 120.71 L 14.645 85.355 C 5.597 76.307 0 63.807 0 50 C 0 50 0 50 0 50 L 50 156 Z" fill="#4285F4"/>
+    <!-- Center Inner Circle Hole (Standard Maps Pin) -->
+    <circle cx="50" cy="50" r="22" fill="#1A73E8"/>
+    <circle cx="50" cy="50" r="16" fill="#FFFFFF"/>
+  </g>
+</svg>
+
