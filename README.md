@@ -1,6 +1,6 @@
 <div align="center">
 
-# 🌍 GeoFlux — 3D Cinematic Google Maps Ad Generator
+# 🌍 GeoFlux - 3D Cinematic Google Maps Ad Generator
 
 **A continuous, procedural 3D journey through global cities, built entirely in code.**
 
