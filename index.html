@@ -1,0 +1,1140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Google Maps – "Go like you live here." (Paris 3D Spec Ad)</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <script type="importmap">
+    {
+      "imports": {
+        "three": "./node_modules/three/build/three.module.js"
+      }
+    }
+  </script>
+  <style>
+    :root {
+      --g-blue: #1A73E8;
+      --g-blue-hover: #1557B0;
+      --g-green: #0F9D58;
+      --g-green-dark: #137333;
+      --g-red: #EA4335;
+      --g-yellow: #FBBC04;
+      --navy-bg: #0B1426;
+      --studio-bg: #0E1217;
+      --panel-bg: rgba(22, 27, 34, 0.94);
+      --card-white: #FFFFFF;
+      --text-main: #202124;
+      --text-muted: #5F6368;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      user-select: none;
+      -webkit-user-select: none;
+    }
+
+    body {
+      background-color: var(--studio-bg);
+      color: #E6EDF3;
+      font-family: 'Google Sans', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      height: 100vh;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Top Studio Header */
+    .studio-header {
+      height: 48px;
+      background: var(--panel-bg);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 20px;
+      z-index: 50;
+    }
+
+    .studio-title-group {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .mini-logo-pin {
+      width: 22px;
+      height: 22px;
+    }
+
+    .project-name {
+      font-size: 14px;
+      font-weight: 600;
+      letter-spacing: 0.2px;
+      color: #FFFFFF;
+    }
+
+    .project-subtag {
+      font-size: 12px;
+      color: #8B949E;
+      padding-left: 8px;
+      border-left: 1px solid rgba(255, 255, 255, 0.15);
+    }
+
+    .header-controls {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .btn-studio {
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      color: #C9D1D9;
+      font-size: 12px;
+      font-weight: 500;
+      padding: 6px 12px;
+      border-radius: 8px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s ease;
+    }
+
+    .btn-studio:hover {
+      background: rgba(255, 255, 255, 0.15);
+      color: #FFFFFF;
+      border-color: rgba(255, 255, 255, 0.25);
+    }
+
+    .btn-studio.active {
+      background: rgba(26, 115, 232, 0.2);
+      border-color: var(--g-blue);
+      color: #8AB4F8;
+    }
+
+    .btn-export {
+      background: var(--g-blue);
+      color: #FFFFFF;
+      border: none;
+      font-weight: 600;
+    }
+
+    .btn-export:hover {
+      background: var(--g-blue-hover);
+    }
+
+    /* Main Center Workspace */
+    .studio-workspace {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      background: radial-gradient(circle at center, #161B22 0%, #0D1117 100%);
+      overflow: hidden;
+    }
+
+    /* Viewport Container (Aspect Ratio Box) */
+    #viewport-container {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+    }
+
+    #studio-viewport {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.6);
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    #studio-viewport.mode-vertical {
+      max-width: 45vh;
+    }
+
+    #webgl-canvas {
+      display: block;
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+    }
+
+    /* ========================================================= */
+    /* GOOGLE MAPS FLOATING UI OVERLAY LAYER                      */
+    /* ========================================================= */
+    .gmaps-ui-layer {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      overflow: hidden;
+      z-index: 10;
+    }
+
+    .ui-panel {
+      position: absolute;
+      pointer-events: auto;
+      transition: opacity 0.4s cubic-bezier(0.16, 1, 0.3, 1), transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .ui-panel.hidden,
+    .ui-screen-overlay.hidden {
+      opacity: 0 !important;
+      visibility: hidden !important;
+      pointer-events: none !important;
+      transform: translateY(12px) scale(0.96);
+    }
+
+    /* 1. White Stage Logo Overlay */
+    .ui-screen-overlay {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 30;
+      transition: opacity 0.5s ease;
+    }
+
+    .white-stage {
+      background: #FFFFFF;
+    }
+
+    .logo-pin-container {
+      width: 140px;
+      height: 140px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .hero-pin-svg {
+      width: 100%;
+      height: 100%;
+    }
+
+    /* 2. Google Green Turn Banner */
+    .turn-banner {
+      top: 32px;
+      left: 36px;
+      background: var(--g-green-dark);
+      color: #FFFFFF;
+      border-radius: 18px;
+      padding: 14px 22px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      box-shadow: 0 6px 24px rgba(0, 0, 0, 0.25);
+    }
+
+    .turn-icon-box {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.18);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .turn-arrow-svg {
+      width: 24px;
+      height: 24px;
+      transform: rotate(45deg);
+    }
+
+    .turn-distance {
+      font-size: 22px;
+      font-weight: 700;
+      line-height: 1.1;
+    }
+
+    .turn-street {
+      font-size: 15px;
+      font-weight: 500;
+      opacity: 0.9;
+    }
+
+    /* 3. Floating Place Cards (White) */
+    .place-card {
+      bottom: 36px;
+      left: 36px;
+      width: 380px;
+      background: var(--card-white);
+      color: var(--text-main);
+      border-radius: 20px;
+      padding: 20px 22px;
+      box-shadow: 0 12px 36px rgba(0, 0, 0, 0.2), 0 2px 6px rgba(0, 0, 0, 0.08);
+    }
+
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 12px;
+    }
+
+    .place-title {
+      font-size: 19px;
+      font-weight: 700;
+      color: #202124;
+      margin-bottom: 4px;
+    }
+
+    .place-rating {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 13px;
+      margin-bottom: 2px;
+    }
+
+    .rating-num {
+      font-weight: 700;
+      color: #E37400;
+    }
+
+    .stars {
+      color: #E37400;
+      letter-spacing: 1px;
+    }
+
+    .reviews-count {
+      color: var(--text-muted);
+    }
+
+    .place-subtitle {
+      font-size: 13px;
+      color: var(--text-muted);
+    }
+
+    .place-category-icon {
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      background: #E8F0FE;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .cat-icon-svg {
+      width: 24px;
+      height: 24px;
+    }
+
+    .bike-status-row {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 14px;
+    }
+
+    .bike-pill {
+      font-size: 12px;
+      font-weight: 600;
+      background: #F1F3F4;
+      padding: 6px 12px;
+      border-radius: 14px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      color: #3C4043;
+    }
+
+    .bike-pill .dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+    }
+
+    .bike-pill .dot.green { background: var(--g-green); }
+    .bike-pill .dot.blue { background: var(--g-blue); }
+
+    .busy-times-block {
+      background: #F8F9FA;
+      border-radius: 12px;
+      padding: 10px 14px;
+      margin-bottom: 14px;
+    }
+
+    .busy-label {
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-bottom: 8px;
+    }
+
+    .busy-label .highlight {
+      color: var(--g-green-dark);
+      font-weight: 600;
+    }
+
+    .histogram-bars {
+      display: flex;
+      align-items: flex-end;
+      height: 32px;
+      gap: 8px;
+    }
+
+    .histogram-bars .bar {
+      flex: 1;
+      background: #DADCE0;
+      border-radius: 3px 3px 0 0;
+      transition: height 0.3s ease;
+    }
+
+    .histogram-bars .bar.active {
+      background: var(--g-blue);
+    }
+
+    .action-chips-row {
+      display: flex;
+      gap: 8px;
+    }
+
+    .chip {
+      background: #FFFFFF;
+      border: 1px solid #DADCE0;
+      color: var(--g-blue);
+      font-size: 13px;
+      font-weight: 600;
+      padding: 8px 16px;
+      border-radius: 18px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .chip.primary {
+      background: var(--g-blue);
+      color: #FFFFFF;
+      border-color: var(--g-blue);
+    }
+
+    /* 4. Rain Ahead Safe-area Chip */
+    .weather-chip {
+      top: 36px;
+      right: 36px;
+      background: rgba(255, 255, 255, 0.94);
+      backdrop-filter: blur(12px);
+      color: #202124;
+      border-radius: 30px;
+      padding: 10px 20px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.18);
+    }
+
+    .weather-icon {
+      font-size: 24px;
+    }
+
+    .weather-title {
+      font-size: 14px;
+      font-weight: 700;
+      color: #1A73E8;
+    }
+
+    .weather-sub {
+      font-size: 12px;
+      color: #5F6368;
+    }
+
+    /* 5. Galerie Vivienne Heritage Badge */
+    .heritage-badge {
+      top: 36px;
+      right: 36px;
+      background: rgba(255, 248, 235, 0.94);
+      backdrop-filter: blur(12px);
+      border: 1px solid #EAD8B8;
+      border-radius: 20px;
+      padding: 12px 22px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+    }
+
+    .heritage-icon {
+      font-size: 26px;
+    }
+
+    .heritage-name {
+      font-size: 16px;
+      font-weight: 700;
+      color: #4A2E1B;
+    }
+
+    .heritage-meta {
+      font-size: 12px;
+      color: #8C6A4A;
+    }
+
+    /* 6. Meet Friends Chip */
+    .friends-chip {
+      top: 36px;
+      right: 36px;
+      background: rgba(255, 255, 255, 0.96);
+      backdrop-filter: blur(12px);
+      border-radius: 24px;
+      padding: 10px 18px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.18);
+    }
+
+    .avatar-stack {
+      display: flex;
+    }
+
+    .avatar {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      border: 2px solid #FFFFFF;
+      margin-left: -10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      font-weight: 700;
+      color: #FFFFFF;
+    }
+
+    .avatar:first-child {
+      margin-left: 0;
+    }
+
+    .av-1 { background: #EA4335; }
+    .av-2 { background: #FBBC04; color: #202124; }
+    .av-3 { background: #4285F4; }
+
+    .friends-title {
+      font-size: 14px;
+      font-weight: 700;
+      color: #202124;
+    }
+
+    .friends-loc {
+      font-size: 12px;
+      color: #5F6368;
+    }
+
+    /* 7. Rooftop Rivoli Tag */
+    .golden-tag {
+      background: #FFF0E0;
+      color: #E37400;
+      font-size: 12px;
+      font-weight: 700;
+      padding: 4px 10px;
+      border-radius: 12px;
+    }
+
+    .rooftop-highlights {
+      display: flex;
+      gap: 8px;
+    }
+
+    .badge-tag {
+      font-size: 12px;
+      background: #F1F3F4;
+      padding: 4px 10px;
+      border-radius: 10px;
+      color: #3C4043;
+    }
+
+    /* 8. You Have Arrived Banner */
+    .arrival-banner {
+      top: 36px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #FFFFFF;
+      border-radius: 24px;
+      padding: 12px 28px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      box-shadow: 0 10px 32px rgba(0, 0, 0, 0.22);
+    }
+
+    .arrival-check {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: #E6F4EA;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .arrival-title {
+      font-size: 16px;
+      font-weight: 700;
+      color: #137333;
+    }
+
+    .arrival-subtitle {
+      font-size: 12px;
+      color: #5F6368;
+    }
+
+    /* 9. Brand Lock-Up (Deep Navy Stage) */
+    .brand-stage {
+      background: linear-gradient(180deg, #070D1A 0%, #0B1426 100%);
+      flex-direction: column;
+    }
+
+    .brand-halo {
+      position: absolute;
+      width: 360px;
+      height: 360px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(66, 133, 244, 0.35) 0%, rgba(66, 133, 244, 0.0) 70%);
+      animation: pulse-halo 3s infinite ease-in-out;
+    }
+
+    @keyframes pulse-halo {
+      0%, 100% { transform: scale(1.0); opacity: 0.6; }
+      50% { transform: scale(1.15); opacity: 0.9; }
+    }
+
+    .brand-center {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      z-index: 5;
+    }
+
+    .brand-pin-box {
+      width: 90px;
+      height: 90px;
+      margin-bottom: 28px;
+    }
+
+    .brand-pin-img {
+      width: 100%;
+      height: 100%;
+      filter: drop-shadow(0 12px 24px rgba(0, 0, 0, 0.5));
+    }
+
+    .brand-tagline {
+      font-size: 38px;
+      font-weight: 700;
+      letter-spacing: -0.5px;
+      color: #FFFFFF;
+      text-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
+    }
+
+    /* 10. Creator End Card */
+    .endcard-stage {
+      background: #060A14;
+      flex-direction: column;
+    }
+
+    .endcard-center {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+    }
+
+    .light-point {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #8AB4F8;
+      box-shadow: 0 0 24px 8px rgba(66, 133, 244, 0.8);
+      margin-bottom: 30px;
+    }
+
+    .creator-signature {
+      font-size: 32px;
+      font-weight: 700;
+      color: #FFFFFF;
+      letter-spacing: 0.5px;
+      margin-bottom: 20px;
+    }
+
+    .signature-line {
+      width: 80px;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, #4285F4, transparent);
+      margin-bottom: 24px;
+    }
+
+    .spec-disclaimer {
+      font-size: 11px;
+      line-height: 1.6;
+      color: #6C757D;
+      max-width: 480px;
+    }
+
+    /* ========================================================= */
+    /* BOTTOM STUDIO TIMELINE CONTROLLER & SCRUBBER              */
+    /* ========================================================= */
+    .studio-bottom-bar {
+      height: 96px;
+      background: var(--panel-bg);
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 0 24px;
+      z-index: 50;
+    }
+
+    /* Scrubber Row */
+    .scrubber-row {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 8px;
+    }
+
+    .time-readout {
+      font-family: 'Inter', monospace;
+      font-size: 13px;
+      color: #8AB4F8;
+      font-weight: 600;
+      min-width: 210px;
+    }
+
+    .scrubber-container {
+      flex: 1;
+      position: relative;
+    }
+
+    .timeline-range {
+      width: 100%;
+      -webkit-appearance: none;
+      background: rgba(255, 255, 255, 0.12);
+      height: 6px;
+      border-radius: 3px;
+      outline: none;
+      cursor: pointer;
+    }
+
+    .timeline-range::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      background: var(--g-blue);
+      border: 2px solid #FFFFFF;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
+      cursor: pointer;
+      transition: transform 0.1s ease;
+    }
+
+    .timeline-range::-webkit-slider-thumb:hover {
+      transform: scale(1.25);
+    }
+
+    .beat-badge {
+      font-size: 12px;
+      font-weight: 600;
+      background: rgba(66, 133, 244, 0.15);
+      color: #8AB4F8;
+      padding: 4px 10px;
+      border-radius: 6px;
+      min-width: 160px;
+      text-align: right;
+    }
+
+    /* Player Controls & Beat Chips Row */
+    .controls-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .play-controls-group {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .btn-play-circle {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: var(--g-blue);
+      color: #FFFFFF;
+      border: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      box-shadow: 0 4px 12px rgba(26, 115, 232, 0.4);
+      transition: all 0.2s ease;
+    }
+
+    .btn-play-circle:hover {
+      background: var(--g-blue-hover);
+      transform: scale(1.05);
+    }
+
+    .beat-chips-scroll {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      overflow-x: auto;
+      max-width: 65vw;
+      padding-bottom: 2px;
+    }
+
+    .beat-chips-scroll::-webkit-scrollbar {
+      height: 4px;
+    }
+
+    .beat-chips-scroll::-webkit-scrollbar-thumb {
+      background: rgba(255, 255, 255, 0.15);
+      border-radius: 2px;
+    }
+
+    .beat-chip {
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      color: #8B949E;
+      font-size: 11px;
+      font-weight: 500;
+      padding: 4px 10px;
+      border-radius: 12px;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: all 0.15s ease;
+    }
+
+    .beat-chip:hover {
+      background: rgba(255, 255, 255, 0.14);
+      color: #FFFFFF;
+      border-color: rgba(255, 255, 255, 0.2);
+    }
+
+    /* Modal Inputs & Presets Styling */
+    .location-modal-box {
+      width: 520px;
+      text-align: left;
+    }
+
+    .modal-desc {
+      font-size: 13px;
+      color: #8B949E;
+      margin-bottom: 18px;
+    }
+
+    .section-label {
+      font-size: 11px;
+      font-weight: 700;
+      color: #8AB4F8;
+      letter-spacing: 0.8px;
+      margin-bottom: 10px;
+    }
+
+    .city-presets-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+      margin-bottom: 20px;
+    }
+
+    .preset-btn {
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      color: #C9D1D9;
+      padding: 10px 12px;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s ease;
+    }
+
+    .preset-btn:hover {
+      background: rgba(255, 255, 255, 0.14);
+      color: #FFFFFF;
+      border-color: rgba(255, 255, 255, 0.25);
+    }
+
+    .preset-btn.active {
+      background: rgba(26, 115, 232, 0.25);
+      border-color: var(--g-blue);
+      color: #8AB4F8;
+    }
+
+    .custom-route-section {
+      background: rgba(0, 0, 0, 0.25);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 12px;
+      padding: 16px;
+      margin-bottom: 18px;
+    }
+
+    .input-field-group {
+      margin-bottom: 12px;
+    }
+
+    .input-field-group label {
+      display: block;
+      font-size: 12px;
+      color: #8B949E;
+      margin-bottom: 6px;
+      font-weight: 500;
+    }
+
+    .studio-input {
+      width: 100%;
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      color: #FFFFFF;
+      padding: 8px 12px;
+      border-radius: 8px;
+      font-size: 13px;
+      outline: none;
+      transition: border-color 0.2s ease;
+    }
+
+    .studio-input:focus {
+      border-color: var(--g-blue);
+      background: rgba(255, 255, 255, 0.1);
+    }
+
+    .slider-group {
+      margin-bottom: 14px;
+    }
+
+    .slider-group label {
+      display: flex;
+      justify-content: space-between;
+      font-size: 12px;
+      color: #8B949E;
+      margin-bottom: 6px;
+    }
+
+    .modal-footer-row {
+      display: flex;
+      justify-content: flex-end;
+    }
+
+    /* Export Progress Modal */
+    .export-modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.75);
+      backdrop-filter: blur(8px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 100;
+      transition: opacity 0.3s ease;
+    }
+
+    .export-modal-backdrop.hidden {
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .export-modal-box {
+      width: 440px;
+      background: #161B22;
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      border-radius: 16px;
+      padding: 28px;
+      text-align: center;
+      box-shadow: 0 16px 48px rgba(0, 0, 0, 0.5);
+    }
+
+    .modal-title {
+      font-size: 18px;
+      font-weight: 700;
+      margin-bottom: 12px;
+      color: #FFFFFF;
+    }
+
+    .progress-bar-bg {
+      width: 100%;
+      height: 10px;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 5px;
+      overflow: hidden;
+      margin: 16px 0;
+    }
+
+    .progress-bar-fill {
+      width: 0%;
+      height: 100%;
+      background: linear-gradient(90deg, #1A73E8, #34A853);
+      transition: width 0.15s linear;
+    }
+
+    .modal-status {
+      font-size: 13px;
+      color: #8B949E;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Studio Navigation Bar -->
+  <header class="studio-header">
+    <div class="studio-title-group">
+      <img src="assets/google_maps_pin.svg" alt="Google Maps" class="mini-logo-pin" />
+      <span class="project-name">Google Maps – Go like you live here.</span>
+      <span class="project-subtag">Paris 3D Spec Ad · 22s 60 FPS</span>
+    </div>
+
+    <div class="header-controls">
+      <button class="btn-studio active" id="btn-location">📍 Location: Paris</button>
+      <button class="btn-studio" id="btn-voice-settings">🎙️ Voice Studio</button>
+      <button class="btn-studio active" id="btn-audio">🔊 Audio On</button>
+      <button class="btn-studio" id="btn-aspect">📐 Aspect: 16:9</button>
+      <button class="btn-studio active" id="btn-cam">🎥 Cam: Director</button>
+      <button class="btn-studio btn-export" id="btn-export">
+        <svg viewBox="0 0 24 24" width="16" height="16"><path fill="currentColor" d="M19 12v7H5v-7H3v7c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2v-7h-2zm-6 .67l2.59-2.58L17 11.5l-5 5-5-5 1.41-1.41L11 12.67V3h2z"/></svg>
+        Export Master Video
+      </button>
+    </div>
+  </header>
+
+  <!-- Central Viewport Workspace -->
+  <main class="studio-workspace">
+    <div id="viewport-container">
+      <div id="studio-viewport">
+        <canvas id="webgl-canvas"></canvas>
+      </div>
+    </div>
+  </main>
+
+  <!-- Bottom Timeline Player Bar -->
+  <footer class="studio-bottom-bar">
+    <div class="scrubber-row">
+      <div class="time-readout" id="timecode-display">00:00.00 (Frame 0/1320)</div>
+      <div class="scrubber-container">
+        <input type="range" id="timeline-scrubber" class="timeline-range" min="0" max="1" step="0.0005" value="0" />
+      </div>
+      <div class="beat-badge" id="current-beat-badge">Logo Reveal [0.0s - 1.1s]</div>
+    </div>
+
+    <div class="controls-row">
+      <div class="play-controls-group">
+        <button class="btn-play-circle" id="btn-play" title="Play/Pause (Spacebar)">
+          <span id="btn-play-icon">
+            <svg viewBox="0 0 24 24" width="20" height="20"><path fill="currentColor" d="M8 5v14l11-7z"/></svg>
+          </span>
+        </button>
+      </div>
+
+      <div class="beat-chips-scroll" id="beat-chips-container">
+        <!-- Beat marker chips will be injected here -->
+      </div>
+    </div>
+  </footer>
+
+  <!-- Location Selection Modal -->
+  <div class="export-modal-backdrop hidden" id="modal-location">
+    <div class="export-modal-box location-modal-box">
+      <h3 class="modal-title">📍 Select or Create Custom Location Ad</h3>
+      <p class="modal-desc">Choose a city preset or type any custom location on Earth.</p>
+
+      <div class="presets-section">
+        <div class="section-label">POPULAR CITY PRESETS</div>
+        <div class="city-presets-grid">
+          <button class="preset-btn active" data-city="paris">🇫🇷 Paris</button>
+          <button class="preset-btn" data-city="delhi">🇮🇳 New Delhi</button>
+          <button class="preset-btn" data-city="newyork">🇺🇸 New York</button>
+          <button class="preset-btn" data-city="tokyo">🇯🇵 Tokyo</button>
+          <button class="preset-btn" data-city="london">🇬🇧 London</button>
+          <button class="preset-btn" data-city="dubai">🇦🇪 Dubai</button>
+        </div>
+      </div>
+
+      <div class="custom-route-section">
+        <div class="section-label">CUSTOM ROUTE GENERATOR</div>
+        <div class="input-field-group">
+          <label>Start Location / Street</label>
+          <input type="text" id="input-origin" class="studio-input" placeholder="e.g. Connaught Place, New Delhi" value="Connaught Place, New Delhi">
+        </div>
+        <div class="input-field-group">
+          <label>Destination / Rooftop</label>
+          <input type="text" id="input-dest" class="studio-input" placeholder="e.g. India Gate, New Delhi" value="India Gate, New Delhi">
+        </div>
+        <div class="input-field-group">
+          <label>Google Maps API Key (Optional)</label>
+          <input type="password" id="input-apikey" class="studio-input" placeholder="Leave empty to use OpenStreetMap automatic routing">
+        </div>
+        <button class="btn-studio btn-export" id="btn-generate-route" style="width: 100%; justify-content: center; padding: 10px;">
+          🚀 Generate Custom 3D Video Ad
+        </button>
+      </div>
+
+      <div class="modal-footer-row">
+        <button class="btn-studio" id="btn-close-location-modal">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Voice Studio Modal -->
+  <div class="export-modal-backdrop hidden" id="modal-voice">
+    <div class="export-modal-box">
+      <h3 class="modal-title">🎙️ Clear Voice Settings</h3>
+      <p class="modal-desc">Select crystal-clear natural narrator voice and tuning.</p>
+
+      <div class="voice-controls-box">
+        <div class="input-field-group">
+          <label>Select Narrator Voice</label>
+          <select id="voice-select" class="studio-input"></select>
+        </div>
+        <div class="slider-group">
+          <label>Speech Rate: <span id="rate-val">0.98x</span></label>
+          <input type="range" id="slider-voice-rate" min="0.8" max="1.3" step="0.02" value="0.98" class="timeline-range">
+        </div>
+        <div class="slider-group">
+          <label>Voice Pitch: <span id="pitch-val">1.0</span></label>
+          <input type="range" id="slider-voice-pitch" min="0.8" max="1.2" step="0.02" value="1.0" class="timeline-range">
+        </div>
+        <div style="display: flex; gap: 10px; margin-top: 14px;">
+          <button class="btn-studio" id="btn-test-voice" style="flex: 1; justify-content: center;">▶️ Test Clear Voice</button>
+          <button class="btn-studio active" id="btn-close-voice-modal" style="flex: 1; justify-content: center;">Save & Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Exporting Video Modal Backdrop -->
+  <div class="export-modal-backdrop hidden" id="export-modal">
+    <div class="export-modal-box">
+      <h3 class="modal-title">Exporting 60 FPS Master Video</h3>
+      <div class="progress-bar-bg">
+        <div class="progress-bar-fill" id="export-progress"></div>
+      </div>
+      <p class="modal-status" id="export-status">Recording frames and mixing audio stems...</p>
+    </div>
+  </div>
+
+  <!-- Entry Script -->
+  <script type="module" src="src/core/main.js"></script>
+</body>
+</html>
