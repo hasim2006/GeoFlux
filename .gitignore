@@ -1,0 +1,32 @@
+# Dependencies & Build Output
+node_modules/
+dist/
+.vite/
+
+# Large Media & Binaries (Exported master files)
+*.mp4
+*.webm
+*.wav
+*.pdf
+
+# Python bytecode & cache
+__pycache__/
+*.pyc
+*.pyo
+
+# Temporary scripts & logs
+/preview/
+!assets/preview/
+*.log
+0.26.0
+
+# Editor & System Files
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# Environment variables & secrets
+.env
+.env.*
+!.env.example
