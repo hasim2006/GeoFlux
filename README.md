@@ -1,6 +1,6 @@
 <div align="center">
 
-# 🌍 GeoFlux - 3D Cinematic Google Maps Ad Generator
+# GeoFlux - 3D Cinematic Google Maps Ad Generator
 
 **A continuous, procedural 3D journey through global cities, built entirely in code.**
 
@@ -12,7 +12,7 @@
 
 <br/>
 
-> 🚀 **LIVE PRODUCTION LINK**:  
+>  **LIVE PRODUCTION LINK**:  
 > **[https://google-maps-3d-ad-generator.vercel.app](https://google-maps-3d-ad-generator.vercel.app)**  
 > *(Experience interactive real-time 3D navigation, dynamic weather, custom city routing, and procedural audio directly in your browser)*
 
@@ -20,7 +20,7 @@
 
 ---
 
-## 📽️ Cinematic Video Ad Showcase
+## ️ Cinematic Video Ad Showcase
 
 <div align="center">
 
@@ -28,7 +28,7 @@
 
 <br/>
 
-### 🎥 Watch Full 1080p Master Ad with Procedural Audio
+### Watch Full 1080p Master Ad with Procedural Audio
 https://github.com/user-attachments/assets/demo-video
 
 *(Direct repository media link: [`assets/geoflux_demo.mp4`](assets/geoflux_demo.mp4))*
@@ -43,7 +43,7 @@ https://github.com/user-attachments/assets/demo-video
 
 ---
 
-## 📖 About GeoFlux
+## About GeoFlux
 
 **GeoFlux** is an open-source, code-generated 3D advertising and cinematic video engine designed around the official Google Maps spec concept:  
 > *"Go like you live here. A continuous 3D journey through the city, built entirely in code."*
@@ -54,19 +54,19 @@ Everything — from Haussmannian facades, vaulted glass arcades, wet reflective 
 
 ---
 
-## 🌟 Key Capabilities
+## Key Capabilities
 
-### 1. 🏙️ Procedural 3D Environment Engine
+### 1. ️ Procedural 3D Environment Engine
 - **Architectural Generation**: Haussmannian building blocks with Parisian zinc mansard roofs, classical limestone cornices, decorative iron balconies, glowing window matrices, and terracotta chimneys.
 - **Hero Interior Arcade**: Galerie Vivienne covered passage featuring repeating neoclassical arches, glazed glass vaulted canopies, terrazzo mosaic floor runners, and illuminated oak boutique storefronts.
 - **Landmark Horizons**: Procedural representations of the Eiffel Tower, India Gate, Empire State Building, Big Ben, Tokyo Tower, and Burj Khalifa.
 
-### 2. 🗺️ Global Routing & Location Engine
+### 2. ️ Global Routing & Location Engine
 - **Google Maps Integration**: Direct support for Google Maps Platform Javascript API & Directions service.
 - **Free OpenStreetMap Engine**: Zero-API-key fallback using OSM Nominatim for forward/reverse geocoding and OSRM for realistic turn-by-turn driving, cycling, and walking splines.
 - **Instant City Presets**: Pre-configured route topologies for **Paris, Delhi, New York, Tokyo, London, and Dubai**.
 
-### 3. 🎵 Procedural Web Audio Synthesizer
+### 3.  Procedural Web Audio Synthesizer
 - **Electronic Rhythm Track**: Steady 118 BPM forward rhythm driven by procedural dual-oscillator kicks, crisp filtered noise claps, and offbeat 16th-note hi-hats.
 - **Spatial Audio Effects**:
   - Logo pop tick chime at `0.05s`
@@ -76,23 +76,23 @@ Everything — from Haussmannian facades, vaulted glass arcades, wet reflective 
   - Acoustic convolution reverberation and warm minor-seventh chords inside Galerie Vivienne at `8.80s`
   - Sidewalk café chatter and arrival notification ping at `10.70s`
 
-### 4. 🎙️ Voice Studio & Natural TTS
+### 4. ️ Voice Studio & Natural TTS
 - Built-in speech synthesis engine capable of delivering crystal-clear location voiceovers.
 - Adjustable speech rate, pitch, and voice profiles (US English, British, French, Natural Neural).
 - Real-time preview and volume balancing alongside the synthesized music track.
 
-### 5. ⛅ Dynamic Weather & Atmosphere
+### 5.  Dynamic Weather & Atmosphere
 - **Atmospheric Scattering**: Smooth Three.js `ExponentialFog` transitions responding dynamically to route elevations.
 - **Instanced Rain Physics**: 1,200 particle rain system featuring wind drift, angle velocity, and ground splash ripples.
 - **Lighting Choreography**: Midday crisp sunlight transitioning to slate overcast rain ambience, moving into peach-orange Golden Hour sunset (`13.3s`), and culminating in deep luxury navy blue (`18.8s`).
 
-### 6. 🎬 Dual Export Pipeline
+### 6.  Dual Export Pipeline
 - **In-Browser Recording**: Real-time 60 FPS recording via Canvas `captureStream()` and `MediaRecorder` directly into WebM or MP4.
 - **Headless Offline Rendering**: Automated Python + Playwright headless Chromium pipeline for frame-accurate 1080p60 exports via FFmpeg.
 
 ---
 
-## ⏱️ 22-Second Ad Progression (Beat Sheet)
+## ️ 22-Second Ad Progression (Beat Sheet)
 
 ```
 0.0s ─── 1.1s ─── 3.1s ─── 5.4s ─── 8.8s ─── 10.7s ─── 13.3s ─── 16.7s ─── 18.8s ─── 20.3s ─── 22.0s
@@ -104,7 +104,7 @@ Reveal   Dive     Bike     Ahead    Vivienne   Friends  Hour     Reveal   Lockup
 | :---: | :---: | :--- | :--- |
 | **01** | `0.0s – 1.1s` | **Logo Reveal**: White stage; Google Maps pin compresses into a pulsing blue radar dot. | Initial pop tick chime (`0.05s`), electronic rhythm kick. |
 | **02** | `1.1s – 3.1s` | **Navigation Dive**: Low dive between Haussmann facades; green turn banner displays *"In 150m Rue de Rivoli"*. | High-speed navigation whoosh sweep (`1.10s`), dual confirmation chimes. |
-| **03** | `3.1s – 5.4s` | **Get a Bike**: Vélib station card appears (★ 4.8, 14 bikes); GPS dot morphs into bicycle marker. | Freewheel mechanical ratchet clicks (`3.10s`), brass handlebar bell ring. |
+| **03** | `3.1s – 5.4s` | **Get a Bike**: Vélib station card appears ( 4.8, 14 bikes); GPS dot morphs into bicycle marker. | Freewheel mechanical ratchet clicks (`3.10s`), brass handlebar bell ring. |
 | **04** | `5.4s – 8.8s` | **Rain Ahead**: *"Rain in 10 min"* weather chip; slate overcast lighting, falling rain streaks, asphalt gloss. | Filtered noise gentle rain loop (`5.40s`), distant ambient thunder rumble. |
 | **05** | `8.8s – 10.7s` | **Galerie Vivienne**: Glide into glazed vaulted arcade with classical stone arches and mosaic floor. | Chamber room reverberation, warm minor-seventh chords (`8.80s`). |
 | **06** | `10.7s – 13.3s` | **Meet Friends**: Daylight exit to Rue de Beaujolais café; *"3 friends already there"* avatar stack. | Sidewalk café chatter, arrival notification ping (`10.70s`). |
@@ -115,7 +115,7 @@ Reveal   Dive     Bike     Ahead    Vivienne   Friends  Hour     Reveal   Lockup
 
 ---
 
-## 🏛️ System Architecture
+## ️ System Architecture
 
 ```mermaid
 sequenceDiagram
@@ -138,7 +138,7 @@ sequenceDiagram
 
 ---
 
-## 📁 Repository Directory Structure
+## Repository Directory Structure
 
 ```
 GeoFlux/
@@ -181,7 +181,7 @@ GeoFlux/
 
 ---
 
-## 🛠️ Technology Stack
+## ️ Technology Stack
 
 | Domain | Technology | Purpose |
 | :--- | :--- | :--- |
@@ -196,7 +196,7 @@ GeoFlux/
 
 ---
 
-## 🚀 Quickstart & Local Setup
+## Quickstart & Local Setup
 
 ### Prerequisites
 - [Node.js](https://nodejs.org/) (v18.0.0 or higher)
@@ -226,7 +226,7 @@ npm run preview
 
 ---
 
-## 🎥 Offline Master Rendering Pipeline (Python)
+## Offline Master Rendering Pipeline (Python)
 
 To generate a master 1080p60 uncompressed MP4 file offline using headless Chromium:
 
@@ -242,7 +242,7 @@ The output file `Google_Maps_Go_Like_You_Live_Here_1080p60.mp4` will be rendered
 
 ---
 
-## 🔐 Security & Production Hardening
+## Security & Production Hardening
 
 GeoFlux incorporates production-grade HTTP security headers configured in `vercel.json`:
 - **`X-Content-Type-Options: nosniff`**: Prevents MIME-type sniffing.
@@ -254,7 +254,7 @@ GeoFlux incorporates production-grade HTTP security headers configured in `verce
 
 ---
 
-## 📄 License
+## License
 
 This project is licensed under the **Apache License 2.0**. See the [LICENSE](LICENSE) file for details.
 
@@ -262,7 +262,7 @@ This project is licensed under the **Apache License 2.0**. See the [LICENSE](LIC
 
 <div align="center">
 
-Crafted with ❤️ by [**@hasim2006**](https://github.com/hasim2006)  
+Crafted with ️ by [**@hasim2006**](https://github.com/hasim2006)  
 *Spec Ad Concept & Design inspired by official Google Maps Campaign guidelines.*
 
 **[⬆ Back to Top](#-geoflux--3d-cinematic-google-maps-ad-generator)**
