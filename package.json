@@ -1,18 +1,19 @@
 {
-  "name": "google-maps-go-like-you-live-here",
-  "version": "1.0.0",
-  "description": "Google Maps Spec Ad - 'Go like you live here.' A 22-second real-time 3D Paris journey built entirely in code.",
-  "scripts": {
-    "dev": "vite",
-    "build": "vite build",
-    "preview": "vite preview",
-    "render": "python scripts/render_video.py"
-  },
-  "dependencies": {
-    "three": "^0.170.0"
-  },
-  "devDependencies": {
-    "vite": "^6.0.0"
-  }
+    "name":  "geoflux-3d-maps",
+    "version":  "1.0.0",
+    "description":  "GeoFlux: 3D Cinematic Google Maps Spec Ad \u0026 Video Generator built with Three.js, Web Audio API, and real-time routing.",
+    "scripts":  {
+                    "dev":  "vite",
+                    "build":  "vite build",
+                    "preview":  "vite preview",
+                    "render":  "python scripts/render_video.py"
+                },
+    "dependencies":  {
+                         "three":  "^0.170.0"
+                     },
+    "devDependencies":  {
+                            "vite":  "^6.0.0"
+                        },
+    "author":  "Mohammad Hasim \u003chasimsaudagar3@gmail.com\u003e",
+    "homepage":  "https://google-maps-3d-ad-generator.vercel.app"
 }
-
